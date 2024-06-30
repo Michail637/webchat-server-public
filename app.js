@@ -14,7 +14,6 @@ const io = new Server(httpServer, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
-    allowedHeaders: ["my-custom-header"],
     credentials: true
   }
 } );
@@ -47,3 +46,4 @@ io.on("connection", async (socket) => {
 });
 
 httpServer.listen(80);
+// httpServer.listen(80, '192.168.1.46');
