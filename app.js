@@ -9,6 +9,12 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, { 
   cookie:true,
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["my-custom-header"],
+    credentials: true
+  }
 } );
 
 const accountRoute = require("./routes/accountRoute");
@@ -16,6 +22,8 @@ const chatsRoute = require("./routes/chatsRoute");
 
 const chatsController = require("./controllers/chatsController");
 const messageController = require("./controllers/messageController");
+
+app.use(cors())
 
 app.use( "/", express.static("public") );
 app.use(express.json()); // to access URL parameters
