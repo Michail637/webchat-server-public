@@ -46,7 +46,7 @@ const accountController = {
       response.status(500).json( {error: "Internal server error", message: "Token creation failed"} );
       return;
     }
-    const URL = `http://localhost:${process.env.PORT}/account/registration-confirmation?token=${registrationToken}`;
+    const URL = `http://13.53.145.114:${process.env.PORT}/account/registration-confirmation?token=${registrationToken}`;
 
     emailManager.sendEmail(email, "Registration", URL)
     .then( () => {
@@ -63,14 +63,14 @@ const accountController = {
     const regestrationToken = request.query.token;
     const registrationData = jwtManager.authorise(regestrationToken, process.env.REGISTRATION_KEY); // returns either data or false 
     if(!registrationData) {
-      response.redirect(`http://localhost:${process.env.PORT}/registration-confirmation?success=false`);
+      response.redirect(`http://13.53.145.114:${process.env.PORT}/registration-confirmation?success=false`);
       return;
     }
     const decryptedPassword = encryptionManager.decrypt(registrationData.password, process.env.PASSWORD_ENCRYPTION_KEY);
     const hashedPassword = await hashManager.hash(decryptedPassword);
     const uuid = crypto.randomUUID();
     const databaseResult = await accountModel.createAccount(uuid, registrationData.username, registrationData.email, hashedPassword);
-    response.redirect(`http://localhost:${process.env.PORT}/registration-confirmation?success=${databaseResult}`);
+    response.redirect(`http://13.53.145.114:${process.env.PORT}/registration-confirmation?success=${databaseResult}`);
     return;
   },
 
@@ -86,7 +86,7 @@ const accountController = {
       userID: authData.userID
     }
     const removalToken = jwtManager.createJWT(credentials, process.env.REMOVAL_KEY, parseInt(process.env.REMOVAL_KEY_EXPIRE));
-    const URL = `http://localhost:${process.env.PORT}/account/removal-confirmation?token=${removalToken}`;
+    const URL = `http://13.53.145.114:${process.env.PORT}/account/removal-confirmation?token=${removalToken}`;
     emailManager.sendEmail( authData.email, "Removal of account", URL )
     .then( () => {
       response.status(200).json({message: "Click on the link we sent you via email"});
@@ -102,18 +102,18 @@ const accountController = {
     const removalToken = request.query.token;
     const removalData = jwtManager.authorise(removalToken, process.env.REMOVAL_KEY);
     if( !removalData ) {
-      response.redirect( `http://localhost:${process.env.PORT}/removal-confirmation?success=false` )
+      response.redirect( `http://13.53.145.114:${process.env.PORT}/removal-confirmation?success=false` )
       response.status(401).json({error: "Unauthorised", message: "Token is either expired or invalid"});
       return;
     }
     const userID = removalData.userID;
     const databaseResult = await accountModel.removeAccount(userID);
     if(!databaseResult){
-      response.redirect(`http://localhost:${process.env.PORT}/removal-confirmation?success=${databaseResult}`);
+      response.redirect(`http://13.53.145.114:${process.env.PORT}/removal-confirmation?success=${databaseResult}`);
     }
     else {
       response.cookie("authToken", "");
-      response.redirect(`http://localhost:${process.env.PORT}/removal-confirmation?success=${databaseResult}`);
+      response.redirect(`http://13.53.145.114:${process.env.PORT}/removal-confirmation?success=${databaseResult}`);
     }
     return;
   },
