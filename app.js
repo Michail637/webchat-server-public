@@ -46,4 +46,4 @@ io.on("connection", async (socket) => {
   return;
 });
 
-httpServer.listen(process.env.PORT || 4000);
+httpServer.listen(80);
