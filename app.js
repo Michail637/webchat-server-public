@@ -46,4 +46,4 @@ io.on("connection", async (socket) => {
   return;
 });
 
-httpServer.listen(443);
+httpServer.listen(80);
